@@ -10,7 +10,7 @@ module.exports = {
                     code: 401
                 };
             }
-            const claim = await verify_token(token).catch(()=>{
+            const claim = await verify_token(token).catch(() => {
                 throw {
                     code: 401
                 };
@@ -27,8 +27,14 @@ module.exports = {
                 };
             }
             next();
-        }catch (err) {
+        } catch (err) {
             res.sendStatus(err.code || 500);
         }
+    },
+    isAdmin: (req, res, next) => {
+        if(req.user.role === "admin") {
+            return next();
+        }
+        res.sendStatus(403);
     }
 }
