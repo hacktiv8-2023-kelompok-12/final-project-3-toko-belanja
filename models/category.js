@@ -17,14 +17,16 @@ module.exports = (sequelize, DataTypes) => {
     Category.init({
         type: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
         sold_product_amount: {
             type: DataTypes.INTEGER,
             allowNull: false,
             validate: {
                 isNumeric: true
-            }
+            },
+            defaultValue: 0
         }
     }, {
         sequelize,
