@@ -11,7 +11,8 @@ module.exports = {
       },
       type: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       sold_product_amount: {
         type: Sequelize.INTEGER,
