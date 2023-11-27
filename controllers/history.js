@@ -115,5 +115,36 @@ module.exports = {
         } catch (err) {
             res.sendStatus(500);
         }
+    },
+    getOne: async (req, res) => {
+        try {
+            const {id: UserId, role} = req.user;
+            const {transactionId} = req.params;
+            const history = await History.findByPk(transactionId, {
+                attributes: {exclude: ["id"]},
+                include: [
+                    {
+                        model: Product,
+                        attributes: {exclude: ["createdAt", "updatedAt"]}
+                    }
+                ]
+            });
+            if (!history) {
+                throw {code: 404};
+            }
+            if (role !== "admin") {
+                if (UserId !== history.UserId) {
+                    throw {code: 403};
+                }
+            }
+            history.total_price = formatCurrency(history.total_price);
+            history.Product.price = formatCurrency(history.Product.price);
+            res.json(history);
+        } catch (err) {
+            if (err.code && typeof err.code === 'number') {
+                return res.sendStatus(err.code);
+            }
+            res.sendStatus(500);
+        }
     }
 }
