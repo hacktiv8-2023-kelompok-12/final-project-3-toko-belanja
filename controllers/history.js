@@ -87,7 +87,32 @@ module.exports = {
                 })
             });
         } catch (err) {
-            console.log(err);
+            res.sendStatus(500);
+        }
+    },
+    getAll: async (req, res) => {
+        try {
+            const histories = await History.findAll({
+                attributes: {exclude: ["id"]},
+                include: [
+                    {
+                        model: Product,
+                        attributes: {exclude: ["createdAt", "updatedAt"]}
+                    },
+                    {
+                        model: User,
+                        attributes: {exclude: ["createdAt", "updatedAt"]}
+                    }
+                ]
+            });
+            res.json({
+                transactionHistories: histories.map(history => {
+                    history.total_price = formatCurrency(history.total_price);
+                    history.Product.price = formatCurrency(history.Product.price);
+                    return history;
+                })
+            });
+        } catch (err) {
             res.sendStatus(500);
         }
     }
