@@ -1,5 +1,14 @@
 const {Product, User, TransactionHistory: History, Category, sequelize} = require("../models");
 
+const formatter = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR"
+});
+
+function formatCurrency(val) {
+    return formatter.format(val).replace('\xa0', ' ').split(",")[0];
+}
+
 module.exports = {
     create: async (req, res) => {
         const tx = await sequelize.transaction();
@@ -42,10 +51,7 @@ module.exports = {
             res.json({
                 message: "You have successfully purchase the product",
                 transactionBill: {
-                    total_price: new Intl.NumberFormat("id-ID",{
-                        style: "currency",
-                        currency: "IDR"
-                    }).format(product.price * quantity).replace('\xa0', ' ').split(",")[0],
+                    total_price: formatCurrency(product.price * quantity),
                     quantity,
                     product_name: product.title
                 }
@@ -55,6 +61,33 @@ module.exports = {
             if (err.code && typeof err.code === 'number') {
                 return res.sendStatus(err.code);
             }
+            res.sendStatus(500);
+        }
+    },
+    getMy: async (req, res) => {
+        try {
+            const {id: UserId} = req.user;
+            const histories = await History.findAll({
+                where: {
+                    UserId
+                },
+                attributes: {exclude: ["id"]},
+                include: [
+                    {
+                        model: Product,
+                        attributes: {exclude: ["createdAt", "updatedAt"]}
+                    }
+                ]
+            });
+            res.json({
+                transactionHistories: histories.map(history => {
+                    history.total_price = formatCurrency(history.total_price);
+                    history.Product.price = formatCurrency(history.Product.price);
+                    return history;
+                })
+            });
+        } catch (err) {
+            console.log(err);
             res.sendStatus(500);
         }
     }
