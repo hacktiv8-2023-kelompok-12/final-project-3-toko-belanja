@@ -71,7 +71,7 @@ module.exports = {
         try {
             const {id} = req.user;
             const {full_name, email} = req.body;
-            const user = await User.findByPk(id, {});
+            let user = await User.findByPk(id, {});
             if (!user) {
                 throw {code: 404};
             }
@@ -96,6 +96,10 @@ module.exports = {
                     id
                 }
             });
+            user = await User.findByPk(id, {});
+            if (!user) {
+                throw {code: 404};
+            }
             res.json({
                 user: {
                     id: user.id,
@@ -134,11 +138,11 @@ module.exports = {
         try {
             const {id} = req.user;
             const {balance} = req.body;
-            const user = await User.findByPk(id, {});
+            let user = await User.findByPk(id, {});
             if (!user) {
                 throw {code: 404};
             }
-            user.balance = balance;
+            user.balance += balance;
             await user.validate().catch((err) => {
                 if (err.errors.length > 1) {
                     if (!err.errors.find(e => e.validatorKey === "len" && e.path === "password")) {
@@ -148,12 +152,16 @@ module.exports = {
                 return 1
             });
             await User.update({
-                balance
+                balance: user.balance
             }, {
                 where: {
                     id
                 }
             });
+            user = await User.findByPk(id, {});
+            if (!user) {
+                throw {code: 404};
+            }
             res.json({
                 message: `Your balance has been successfully updated to ${formatCurrency(user.balance)}`
             });
