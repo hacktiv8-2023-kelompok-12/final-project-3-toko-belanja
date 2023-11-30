@@ -124,7 +124,6 @@ module.exports = {
                 message: "Your account has been successfully deleted"
             });
         } catch (err) {
-            console.log(err);
             if (err.code && typeof err.code === 'number') {
                 return res.sendStatus(err.code);
             }
