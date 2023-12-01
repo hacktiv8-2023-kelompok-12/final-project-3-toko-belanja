@@ -1,5 +1,6 @@
 'use strict';
 
+const {hash} = require("../lib/crypto");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
@@ -15,7 +16,7 @@ module.exports = {
         await queryInterface.bulkInsert('Users', [{
             full_name: "admin",
             email: "admin@mail.com",
-            password: "admintest",
+            password: hash("admintest"),
             gender: "male",
             role: "admin",
             balance: 100000,
