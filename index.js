@@ -4,4 +4,4 @@ const route = require("./routes");
 
 app.use(express.json());
 app.use(route);
-app.listen(process.env.PORT);
+app.listen(process.env.PORT || 3000, "0.0.0.0");
