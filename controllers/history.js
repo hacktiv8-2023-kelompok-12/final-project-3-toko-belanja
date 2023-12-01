@@ -48,7 +48,7 @@ module.exports = {
                 total_price: product.price * quantity
             });
             await tx.commit();
-            res.json({
+            res.status(201).json({
                 message: "You have successfully purchase the product",
                 transactionBill: {
                     total_price: formatCurrency(product.price * quantity),

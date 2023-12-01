@@ -16,7 +16,7 @@ module.exports = {
                 }
                 throw {code: 500, err}
             });
-            res.json({category});
+            res.status(201).json({category});
         } catch (err) {
             if (err.code && typeof err.code === 'number') {
                 return res.sendStatus(err.code);
