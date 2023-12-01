@@ -20,6 +20,7 @@ module.exports = {
         "password": process.env.DB_PASSWORD || "secret",
         "database": process.env.DB_NAME || "toko_belanja",
         "host": process.env.DB_HOST || "localhost",
-        "dialect": process.env.DB_DIALECT || "postgres"
+        "dialect": process.env.DB_DIALECT || "postgres",
+        "port": process.env.DB_PORT,
     }
 }
