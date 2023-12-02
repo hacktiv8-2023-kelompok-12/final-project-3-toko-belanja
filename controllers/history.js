@@ -25,8 +25,14 @@ module.exports = {
             if (balance < product.price * quantity) {
                 throw {code: 400}
             }
-            product.stock -= quantity;
-            await product.save();
+            await Product.update({
+                stock: product.stock - quantity
+            }, {
+                where: {
+                    id: product.id
+                },
+                validate: false
+            });
             await Category.update({
                 sold_product_amount: product.Category.sold_product_amount + quantity
             }, {
@@ -57,6 +63,7 @@ module.exports = {
                 }
             });
         } catch (err) {
+            console.log(err);
             await tx.rollback();
             if (err.code && typeof err.code === 'number') {
                 return res.sendStatus(err.code);

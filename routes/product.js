@@ -3,11 +3,10 @@ const midd = require("../middleware/auth");
 
 const router = require("express").Router();
 router.use(midd.isAuth);
-router.use(midd.isAdmin);
-router.post("/", controller.create);
+router.post("/", midd.isAdmin, controller.create);
 router.get("/", controller.getAll);
-router.put("/:productId", controller.update);
-router.patch("/:productId", controller.patch);
-router.delete("/:productId", controller.delete);
+router.put("/:productId", midd.isAdmin, controller.update);
+router.patch("/:productId", midd.isAdmin, controller.patch);
+router.delete("/:productId", midd.isAdmin, controller.delete);
 
 module.exports = router;
