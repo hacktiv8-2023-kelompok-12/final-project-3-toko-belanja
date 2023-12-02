@@ -6,6 +6,6 @@ router.post("/register", controller.register);
 router.post("/login", controller.login);
 router.put("/", midd.isAuth, controller.update);
 router.delete("/", midd.isAuth, controller.delete);
-router.patch("/", midd.isAuth, controller.topup);
+router.patch("/topup", midd.isAuth, controller.topup);
 
 module.exports = router;
